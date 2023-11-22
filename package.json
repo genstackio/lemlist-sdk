@@ -23,7 +23,7 @@
     "test": "jest --config jest.config.js"
   },
   "dependencies": {
-    "@genstackio/validator": "^0.1.0"
+    "@genstackio/validator": "^0.1.1"
   },
   "peerDependencies": {
     "cross-fetch": "^3.1.5"
