@@ -6,7 +6,7 @@ const protocol = 'https';
 const rootDomain = 'lemlist.com';
 const buildEndpoint = (e, n) => `${protocol}://api.${'prod' === e ? '' : `${e}.`}${rootDomain}/api/${n}`;
 
-export function createEnvSdk({ fetch, defaultEnv = 'prod' }: { fetch?: Function; defaultEnv?: string } = {}) {
+export function createEnvSdk({ fetch, defaultEnv = 'prod', apiKey }: { apiKey?: string; fetch?: Function; defaultEnv?: string } = {}) {
     return createSdk({
         fetch: fetch || ('undefined' !== typeof window && window.fetch ? window.fetch.bind(window) : undefined),
         env:
@@ -14,10 +14,11 @@ export function createEnvSdk({ fetch, defaultEnv = 'prod' }: { fetch?: Function;
             process.env.STORYBOOK_LEMLIST_ENV ||
             process.env.LEMLIST_SDK_ENV ||
             defaultEnv,
+        apiKey,
     });
 }
 
-export function createSdk({ fetch, env = 'prod' }: { fetch?: Function; env?: string } = {}) {
+export function createSdk({ fetch, env = 'prod', apiKey }: { apiKey?: string; fetch?: Function; env?: string } = {}) {
     const sdk = new Sdk({
         fetch: fetch || crossFetch,
         endpoints: {
@@ -30,7 +31,7 @@ export function createSdk({ fetch, env = 'prod' }: { fetch?: Function; env?: str
             hook: buildEndpoint(env, 'hooks'),
         },
     });
-    const apiKey = process.env.RAZZLE_LEMLIST_API_KEY || process.env.STORYBOOK_LEMLIST_API_KEI || process.env.LEMLIST_API_KEY || undefined;
+    apiKey = apiKey || process.env.RAZZLE_LEMLIST_API_KEY || process.env.STORYBOOK_LEMLIST_API_KEI || process.env.LEMLIST_API_KEY || undefined;
     if (apiKey) sdk.setApiKey(apiKey);
     return sdk;
 }

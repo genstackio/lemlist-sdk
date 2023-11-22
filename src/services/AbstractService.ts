@@ -18,13 +18,13 @@ export abstract class AbstractService {
         return this.apiKey;
     }
     protected base64encode(text: string, urlEncode = true): string {
-        return new Buffer(text).toString(urlEncode ? 'base64url' : 'base64');
+        return Buffer.from(text).toString(urlEncode ? 'base64url' : 'base64');
     }
     protected async request(uri: string, method = 'GET', body: string | undefined = undefined, headers: any = {}) {
         let response;
         try {
             const apiKey = this.getApiKey();
-            apiKey && (headers = {...headers, 'Authorization': `:${apiKey}`});
+            apiKey && (headers = {...headers, 'Authorization': `Basic ${this.base64encode(`:${apiKey}`)}`});
 
             response = await this.context.fetch(`${this.context.endpoint}${uri}`, { method, body, headers });
         } catch (e) {
